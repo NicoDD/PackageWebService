@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+   <session-factory>
+	   <property name="hibernate.dialect">
+	      org.hibernate.dialect.MySQLDialect
+	   </property>
+	   <property name="hibernate.connection.driver_class">
+	      com.mysql.jdbc.Driver
+	   </property>
+	
+	   <!-- Assume students is the database name -->
+	   <property name="hibernate.connection.url">
+	      jdbc:mysql://localhost/package_manager
+	   </property>
+	   <property name="hibernate.connection.username">
+	      nicolas
+	   </property>
+	   <property name="hibernate.connection.password">
+	      nicolas
+	   </property>
+	   
+	   <property name="hibernate.id.new_generator_mappings">false</property>
+	   <property name="hibernate.connection.autocommit">true</property>
+	   <mapping class="com.packages.manager.model.PackageObject"/>
+	   <mapping class="com.packages.manager.model.Product"/>
+	</session-factory>
+</hibernate-configuration>

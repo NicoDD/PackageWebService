@@ -117,6 +117,12 @@
 			<scope>test</scope>
 		</dependency>
 		
+        <dependency>
+            <groupId>mysql</groupId>
+            <version>5.1.21</version>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        
 		<!-- Jackson  -->
 		<dependency>
 		  <groupId>org.codehaus.jackson</groupId>
@@ -145,7 +151,6 @@
 		    <artifactId>hibernate-core</artifactId>
 		    <version>5.2.10.Final</version>
 		</dependency>
-			     
 	</dependencies>
     <build>
         <plugins>

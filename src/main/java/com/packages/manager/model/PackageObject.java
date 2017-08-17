@@ -1,8 +1,10 @@
 package com.packages.manager.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,12 +34,16 @@ public class PackageObject
 	@Column(name="description")
 	private String description;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="package_product", 
 			 joinColumns = {@JoinColumn(name="package_id")},
 			 inverseJoinColumns = {@JoinColumn(name="product_id")})
-	private List<Product> products;
+	private List<Product> products = new ArrayList<Product>();
 	
 	@Column(name="price")
 	private BigDecimal price;
+	
+	public String toString() {
+		return "[id="+id+";name="+name+";description="+description+";price="+price.toString()+"]";
+	}
 }

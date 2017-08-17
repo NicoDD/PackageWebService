@@ -1,36 +1,30 @@
-package services;
+package com.packages.manager.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.packages.manager.model.PackageObject;
 import com.packages.manager.model.Product;
 import com.packages.manager.model.dto.PackageObjectDTO;
-import com.packages.manager.model.dto.ProductDTO;
+
+import utils.HibernateUtils;
 
 public class PackageService {
-
-	private static Configuration  configuration = new Configuration().configure( "/resources/hibernate.cfg.xml");
-	private static SessionFactory factory = configuration.buildSessionFactory();
 
 	private static Logger logger = LoggerFactory.getLogger(PackageService.class);
 	
 	public static PackageObject getPackageById (int id) 
 	{
 		PackageObject packageObject = null;
-		Session session = factory.openSession();
+		Session session = HibernateUtils.getSessionFactory().openSession();
         try {
-        	packageObject =  session.load(PackageObject.class, id);
+        	packageObject = session.load(PackageObject.class, id);
             Hibernate.initialize(packageObject);
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,7 +38,7 @@ public class PackageService {
 	
 	public static PackageObject createPackageObject (PackageObjectDTO packageObjectDTO) 
 	{
-		Session session = factory.openSession();
+		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = null;
 		PackageObject packageObject = new PackageObject();
 
@@ -53,10 +47,11 @@ public class PackageService {
 			tx = session.beginTransaction();
 			
 			packageObject.setName(packageObjectDTO.getName());
+			packageObject.setDescription(packageObjectDTO.getDescription());
 			packageObject.setPrice(packageObjectDTO.getPrice());
-			packageObject.setProducts(new ArrayList<Product>());
 			
 			session.save(packageObject);
+			tx.commit();
 		}
 		catch (HibernateException e) 
 		{
@@ -74,20 +69,18 @@ public class PackageService {
 		return packageObject;
 	}
 	
-	public static boolean updatePackageObject (PackageObjectDTO packageObjectDTO, Product product) 
+	public static boolean updatePackageObject (PackageObject packageObject, Product product) 
 	{
+		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = null;
-		Session session = factory.openSession();
-		PackageObject packageObject = new PackageObject();
 		try
 		{
 			tx = session.beginTransaction();
-			packageObject.setName(packageObjectDTO.getName());
-			packageObject.setPrice(packageObjectDTO.getPrice());
 			if (product != null) {
 				packageObject.getProducts().add(product);
 			}
-			session.save(packageObject);
+			session.update(packageObject);
+			tx.commit();
 			return true;
 		}
 		catch (HibernateException e) 
@@ -107,7 +100,30 @@ public class PackageService {
 	}
 	
 	public static boolean deletePackage(int id) {
-		return false;
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = null;
+		PackageObject packageObject = PackageService.getPackageById(id);
+		try
+		{
+			tx = session.beginTransaction();
+			session.delete(packageObject);
+			tx.commit();
+			return true;
+		}
+		catch (HibernateException e) 
+		{
+	         if (tx != null) {
+	        	 tx.rollback();
+	         }
+	         logger.error(e.getMessage());
+	         return false;
+		}
+		finally 
+		{
+            if (session != null && session.isOpen()) {
+            	session.close(); 
+            }
+		}
 	}
 	
 	public static List<PackageObject> getAllPackages() {
