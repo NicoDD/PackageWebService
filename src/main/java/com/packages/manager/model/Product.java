@@ -37,4 +37,8 @@ public class Product {
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy="products", cascade = CascadeType.ALL)
 	private List<PackageObject> packages = new ArrayList<PackageObject>();
+	
+	public String toString() {
+		return "[id="+id+";name="+name+";ean="+ean+";price="+price.toString()+"]";
+	}
 }

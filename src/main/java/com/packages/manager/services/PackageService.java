@@ -6,6 +6,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,6 +128,10 @@ public class PackageService {
 	}
 	
 	public static List<PackageObject> getAllPackages() {
-		return null;
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		Query query= session.createQuery("from PackageObject");
+		List<PackageObject> packages = query.getResultList();
+		session.close();
+		return packages;
 	}
 }

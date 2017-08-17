@@ -3,6 +3,7 @@ package com.packages.manager.model;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -48,6 +49,18 @@ public class PackageObjectTest {
 		packageDTO.setPrice(new BigDecimal("102"));
 		PackageObject packageObject = PackageService.createPackageObject(packageDTO);
 		assertTrue(PackageService.deletePackage(packageObject.getId()));
+	}
+
+	@Test
+	public void testGetAllPackages() {
+		List<PackageObject> packages = PackageService.getAllPackages();
+		assertFalse(packages.isEmpty());
+		for (PackageObject packageObject : packages) {
+			System.out.println(packageObject.toString());
+			for (Product product : packageObject.getProducts()) {
+				System.out.println("      Associated Product => " + product.toString());
+			}
+		}
 	}
 
 }
